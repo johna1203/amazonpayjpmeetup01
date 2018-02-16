@@ -4,34 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Amazon Pay Develop Summit 2018 | Billing Agreement Sample</title>
+  <style type="text/css">
+    .amazon-widgets {
+      padding: 10px;
+    }
 
-  <script type='text/javascript'>
-      var seller_id = 'AO6B36VTGUJCS';
-      var app_id = 'amzn1.application-oa2-client.8d043be00a8846a7812cce235f736793';
+    .address-widget {
+      background-color: #ccc;
+    }
 
-      window.onAmazonLoginReady = function() {
-        amazon.Login.setClientId(app_id);
-      };
+    .wallet-widget {
+      background-color: #90ee90;
+    }
 
-      window.onAmazonPaymentsReady = function() {
-        showLoginButton();
-        showAddressBookWidget();
+    .consent-widget {
+      background-color: pink;
+    }
 
-      };
+    .amazonlogin-button {
+      color: #fff;
+      background-color: green;
+      height: 200px;
+    }
 
-      document.getElementById('Logout').onclick = function() {
-        amazon.Login.logout();
-        document.cookie = "amazon_Login_accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-        window.location.href = '/';
-      };
-    </script>
+    @keyframes example {
+      0% {
+        background-color: red;
+      }
+      10% {
+        background-color: yellow;
+      }
+      20% {
+        background-color: blue;
+      }
+      30% {
+        background-color: green;
+      }
+      40% {
+        background-color: black;
+      }
+      50% {
+        background-color: pink;
+      }
+      60% {
+        background-color: white;
+      }
+      100% {
+        background-color: red;
+      }
+    }
 
+    h1 {
+      font-size: 3em;
+      text-align: center;
+      color: #fff;
+      background-color: red;
+      -webkit-animation-name: example;
+      -webkit-animation-duration: 4s;
+      animation-name: example;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+
+  </style>
 </head>
 <body>
+<h1>Amazon Pay Developer Meetup #1</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm amazonlogin-button" style="text-align: center;">
+      <h4>ログインボタン</h4>
+      <div id="AmazonPayButton"></div>
 
-
-
-
+      <div id="billingAgreementIdDiv">
+        <div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 amazon-widgets address-widget">
+          <h4>お届け先住所</h4>
+          <div id="addressBookWidgetDiv" style="height:250px"></div>
+        </div>
+        <div class="col-md-4 amazon-widgets wallet-widget">
+          <h4>支払い方法</h4>
+          <div id="walletWidgetDiv" style="height:250px"></div>
+        </div>
+        <div class="col-md-4 amazon-widgets consent-widget">
+          <h4>同意</h4>
+          <div id="consentWidgetDiv" style="height:250px"></div>
+        </div>
+      </div>
+      <div class="row" style="margin: 10px;">
+        <div class="col-sm" style="text-align: center;">
+          <a href="javascript:void(0)" class="btn btn-success" style="width: 250px;">購入</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="text/javascript"
+          src="https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js"
+          async></script>
 </body>
 </html>
