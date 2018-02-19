@@ -1,4 +1,4 @@
-Amazon pay japan Develop Summit 2018 Sample
+Amazon Pay japan Developer Summit 2018 Sample
 ===========================================
 
 今回のライブコードで使う、htmlになります。
