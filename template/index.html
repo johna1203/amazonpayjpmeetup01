@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <title>Amazon Pay Develop Summit 2018 | Billing Agreement Sample</title>
+
+  <style type="text/css">
+    .amazon-widgets {
+      padding: 10px;
+    }
+
+    .address-widget {
+      background-color: #ccc;
+    }
+
+    .wallet-widget {
+      background-color: #90ee90;
+    }
+
+    .consent-widget {
+      background-color: pink;
+    }
+
+    .amazonlogin-button {
+      color: #fff;
+      background-color: green;
+      height: 200px;
+    }
+
+    @keyframes example {
+      0% {
+        background-color: red;
+      }
+      10% {
+        background-color: yellow;
+      }
+      20% {
+        background-color: blue;
+      }
+      30% {
+        background-color: green;
+      }
+      40% {
+        background-color: black;
+      }
+      50% {
+        background-color: pink;
+      }
+      60% {
+        background-color: white;
+      }
+      100% {
+        background-color: red;
+      }
+    }
+
+    h1 {
+      font-size: 3em;
+      text-align: center;
+      color: #fff;
+      background-color: red;
+      -webkit-animation-name: example;
+      -webkit-animation-duration: 4s;
+      animation-name: example;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+  </style>
+
+  <script type='text/javascript'>
+    var seller_id = 'AO6B36VTGUJCS';
+    var app_id = 'amzn1.application-oa2-client.8d043be00a8846a7812cce235f736793';
+
+    window.onAmazonLoginReady = function () {
+      amazon.Login.setClientId(app_id);
+    };
+
+    window.onAmazonPaymentsReady = function () {
+      showLoginButton();
+      showAddressBookWidget();
+    };
+
+    document.getElementById('Logout').onclick = function () {
+      amazon.Login.logout();
+      document.cookie = "amazon_Login_accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      window.location.href = '/';
+    };
+
+    function showLoginButton() {
+      var authRequest;
+      OffAmazonPayments.Button("AmazonPayButton", "your_seller_merchant_id", {
+        type: "PwA",
+        color: "Gold",
+        size: "x-large",
+
+        authorization: function () {
+          loginOptions = {scope: "profile payments:widget payments:shipping_address", popup: true};
+          authRequest = amazon.Login.authorize(loginOptions, "index.html");
+        }
+      });
+    }
+
+    function showAddressBookWidget() {
+      // AddressBook
+      new OffAmazonPayments.Widgets.AddressBook({
+        sellerId: seller_id,
+        agreementType: 'BillingAgreement',
+        onReady: function (billingAgreement) {
+          var billingAgreementId = billingAgreement.getAmazonBillingAgreementId();
+          document.getElementById('billingAgreementIdDiv').innerHTML = billingAgreementId;
+          // Wallet
+          showWalletWidget(billingAgreementId);
+          // Consent
+          showConsentWidget(billingAgreement);
+        },
+        onAddressSelect: function (billingAgreement) {
+
+        },
+        design: {
+          designMode: 'responsive'
+        },
+        onError: function (error) {
+          console.log('OffAmazonPayments.Widgets.AddressBook', error.getErrorCode(), error.getErrorMessage());
+        }
+      }).bind("addressBookWidgetDiv");
+    }
+
+    function showWalletWidget(billingAgreementId) {
+      // Wallet
+      new OffAmazonPayments.Widgets.Wallet({
+        sellerId: seller_id,
+        agreementType: 'BillingAgreement',
+        amazonBillingAgreementId: billingAgreementId,
+        onReady: function (billingAgreement) {
+          console.log(billingAgreement.getAmazonBillingAgreementId());
+        },
+        onPaymentSelect: function () {
+          console.log(arguments);
+        },
+        design: {
+          designMode: 'responsive'
+        },
+        onError: function (error) {
+          console.log('OffAmazonPayments.Widgets.Wallet', error.getErrorCode(), error.getErrorMessage());
+        }
+      }).bind("walletWidgetDiv");
+    }
+
+    function showConsentWidget(billingAgreement) {
+      // Consent
+      new OffAmazonPayments.Widgets.Consent({
+        sellerId: seller_id,
+        amazonBillingAgreementId: billingAgreement.getAmazonBillingAgreementId(),
+        onReady: function (billingAgreementConsentStatus) {
+        },
+        onConsent: function (billingAgreementConsentStatus) {
+        },
+        design: {
+          designMode: 'responsive'
+        },
+        onError: function (error) {
+          console.log('OffAmazonPayments.Widgets.Consent', error.getErrorCode(), error.getErrorMessage());
+        }
+      }).bind("consentWidgetDiv");
+    }
+  </script>
+</head>
+<body>
+<h1>Amazon Pay Developer Meetup #1</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm amazonlogin-button" style="text-align: center;">
+      <h4>ログインボタン</h4>
+      <div id="AmazonPayButton"></div>
+
+      <div id="billingAgreementIdDiv">
+        <div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 amazon-widgets address-widget">
+          <h4>お届け先住所</h4>
+          <div id="addressBookWidgetDiv" style="height:250px"></div>
+        </div>
+        <div class="col-md-4 amazon-widgets wallet-widget">
+          <h4>支払い方法</h4>
+          <div id="walletWidgetDiv" style="height:250px"></div>
+        </div>
+        <div class="col-md-4 amazon-widgets consent-widget">
+          <h4>同意</h4>
+          <div id="consentWidgetDiv" style="height:250px"></div>
+        </div>
+      </div>
+
+      <div class="row" style="margin: 10px;">
+        <div class="col-sm" style="text-align: center;">
+          <a href="javascript:void(0)" class="btn btn-success" style="width: 250px;">購入</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript"
+          src="https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js"
+          async></script>
+</body>
+</html>

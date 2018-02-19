@@ -89,10 +89,78 @@
   };
 
   window.onAmazonPaymentsReady = function () {
-//    showLoginButton();
-//    showAddressBookWidget();
+    showLoginButton();
+    showAddressBookWidget();
   };
+  
+  function showLoginButton() {
+    OffAmazonPayments.Button('AmazonPayButton',
+      seller_id,{
+        type: 'PwA',
+        color: 'Gold',
+        size: 'x-large',
+        authorization: function () {
+          var loginOptions = {scope: "profile payments:widget payments:shipping_address", popup: true};
+          var authRequest = amazon.Login.authorize(loginOptions, "index.html");
+        }
+      }
+    )
+  }
+  
+  function showAddressBookWidget() {
+    new OffAmazonPayments.Widgets.AddressBook({
+      sellerId: seller_id,
+      agreementType: 'BillingAgreement',
+      onReady: function (billingAgreement) {
+        var baId = billingAgreement.getAmazonBillingAgreementId();
+        document.getElementById('billingAgreementIdDiv').innerHTML = baId;
 
+        // Wallet
+        showWalletWidget(baId);
+
+        // Consent
+        showConsentWidget(baId);
+      },
+      design: {
+        designMode: 'responsive'
+      },
+      onError: function (error) {
+
+      }
+    }).bind('addressBookWidgetDiv');
+    
+    function showWalletWidget(baId) {
+      new OffAmazonPayments.Widgets.Wallet({
+        sellerId: seller_id,
+        amazonBillingAgreementId: baId,
+        agreementType: 'BillingAgreement',
+        onReady: function (billingAgreement) {
+        },
+        design: {
+          designMode: 'responsive'
+        },
+        onError: function (error) {
+
+        }
+      }).bind('walletWidgetDiv');
+    }
+    
+    function showConsentWidget(baId) {
+      new OffAmazonPayments.Widgets.Consent({
+        sellerId: seller_id,
+        amazonBillingAgreementId: baId,
+        agreementType: 'BillingAgreement',
+        onReady: function (billingAgreement) {
+        },
+        design: {
+          designMode: 'responsive'
+        },
+        onError: function (error) {
+
+        }
+      }).bind('consentWidgetDiv');
+    }
+  }
 </script>
 <body>
 <h1>Amazon Pay Developer Meetup #1</h1>
